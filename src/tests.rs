@@ -2,6 +2,7 @@ use super::*;
 use crate::Constants;
 use crate::FrElement;
 
+// Values generated with sage scripts: https://extgit.iaik.tugraz.at/krypto/hadeshash/-/blob/master/code/poseidonperm_x5_255_5.sage (with modified parameters as described here)
 #[test]
 fn test_basic() {
     let t = 3usize;

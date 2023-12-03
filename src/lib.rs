@@ -1,6 +1,4 @@
-use lambdaworks_math::elliptic_curve::short_weierstrass::curves::bls12_381::default_types::FrElement as FE;
-
-pub type FrElement = FE;
+use lambdaworks_math::elliptic_curve::short_weierstrass::curves::bls12_381::default_types::FrElement;
 
 pub struct Constants {
     t: usize,
@@ -28,9 +26,6 @@ impl Poseidon {
         let mut round_vec = input_vec.clone();
 
         for _i in 0..nb_round {
-            //TODO: remove
-            println!("{}", _i);
-
             //round constant
             round_vec = self.round_constant(&round_vec);
 
