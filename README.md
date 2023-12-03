@@ -1,8 +1,10 @@
 # lambda-poseidon-rs
 a (very basic) poseidon hash implementation with [lambdaworks](https://github.com/lambdaclass/lambdaworks/) fields
 
+
 [https://eprint.iacr.org/2019/458.pdf](https://eprint.iacr.org/2019/458.pdf)
 
+Project made for learning purposes!  
 Do not use in production
 
 ## Reference implementations used

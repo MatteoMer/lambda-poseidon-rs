@@ -634,10 +634,23 @@ fn test_basic() {
 
     let mut poseidon = Poseidon::new(constants);
     let input_vec = Vec::from([
-        FrElement::from_hex_unchecked("2"),
-        FrElement::from_hex_unchecked("5"),
-        FrElement::from_hex_unchecked("3"),
+        FrElement::from_hex_unchecked(
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+        ),
+        FrElement::from_hex_unchecked(
+            "0x0000000000000000000000000000000000000000000000000000000000000001",
+        ),
+        FrElement::from_hex_unchecked(
+            "0x0000000000000000000000000000000000000000000000000000000000000002",
+        ),
     ]);
-    poseidon.hash(input_vec);
-    assert_eq!(1, 2);
+    let output_vec = poseidon.hash(input_vec);
+    let expected = [
+        "0x3fb8310b0e962b75bffec5f9cfcbf3f965a7b1d2dcac8d95ccb13d434e08e5fa",
+        "0x43fe5dfa886bfae59d015ed8b2a8c9328230f299203c89b9c78d8b40ccdc7dda",
+        "0x05153d5d7d0f9122550ecc902c0f5248d8ddcacfa1b911699c982099efc48aa7",
+    ];
+    assert_eq!(FrElement::from_hex_unchecked(expected[0]), output_vec[0]);
+    assert_eq!(FrElement::from_hex_unchecked(expected[1]), output_vec[1]);
+    assert_eq!(FrElement::from_hex_unchecked(expected[2]), output_vec[2]);
 }

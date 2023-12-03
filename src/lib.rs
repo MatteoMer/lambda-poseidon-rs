@@ -1,6 +1,3 @@
-mod utils;
-
-use crate::utils::vector_matrix_multiply;
 use lambdaworks_math::elliptic_curve::short_weierstrass::curves::bls12_381::default_types::FrElement as FE;
 
 pub type FrElement = FE;
@@ -31,14 +28,17 @@ impl Poseidon {
         let mut round_vec = input_vec.clone();
 
         for _i in 0..nb_round {
+            //TODO: remove
+            println!("{}", _i);
+
+            //round constant
+            round_vec = self.round_constant(&round_vec);
+
             //s-box
             round_vec = self.s_box(&round_vec);
 
             //mds matrix
-            round_vec = vector_matrix_multiply(&round_vec, &self.constants.m);
-
-            //round constant
-            round_vec = self.round_constant(&round_vec);
+            round_vec = self.mix(&round_vec, &self.constants.m);
         }
         round_vec
     }
@@ -47,21 +47,36 @@ impl Poseidon {
         let mut round_vec = input_vec.clone();
 
         for _i in 0..nb_round {
+            //round constant
+            round_vec = self.round_constant(&round_vec);
+
             //s-box
             let first_elem = self.s_box(&vec![round_vec[0].clone()]);
             round_vec[0] = first_elem[0].clone();
 
             //mds matrix
-            round_vec = vector_matrix_multiply(&round_vec, &self.constants.m);
-
-            //round constant
-            round_vec = self.round_constant(&round_vec);
+            round_vec = self.mix(&round_vec, &self.constants.m);
         }
         round_vec
     }
 
     fn s_box(&self, input: &Vec<FrElement>) -> Vec<FrElement> {
         input.iter().map(|x| x.pow(self.constants.alpha)).collect()
+    }
+
+    // Took from poseidon-rs
+    // https://github.com/arnaucube/poseidon-rs/blob/f4ba1f7c32905cd2ae5a71e7568564bb150a9862/src/lib.rs#L85
+    pub fn mix(&self, state: &Vec<FrElement>, m: &Vec<Vec<FrElement>>) -> Vec<FrElement> {
+        let mut new_state: Vec<FrElement> = Vec::new();
+        for i in 0..state.len() {
+            new_state.push(FrElement::zero());
+            for j in 0..state.len() {
+                let mut mij = m[i][j].clone();
+                mij = mij * &state[j];
+                new_state[i] += mij;
+            }
+        }
+        new_state.clone()
     }
 
     fn round_constant(&mut self, input: &Vec<FrElement>) -> Vec<FrElement> {
